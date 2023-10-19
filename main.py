@@ -1,7 +1,7 @@
 from datetime import datetime
-import http.client
-import hmac
-import hashlib
+from binance.spot import Spot
+
+from client import spot_client
 
 
 # print(client.get_all_tickers())
@@ -15,22 +15,10 @@ import hashlib
 api_key='8ne2q3GEHrnk5HTd73LNinuvQ3yJRkFHOma3EHciwXiJpkUSOAXzBvdepo0Qp41j'
 api_secret='3yQvwYYq6nmBdkIJhogK2UMhLCT5f4ogEB3bVta7Q1XkU5V2eNdFq18169cImkzc'
 
-time = round(datetime.now().timestamp() * 1000)
-query_string = f'timestamp={time}'
+client = spot_client.Client(api_key=api_key, api_secret=api_secret, base_url='https://testnet.binance.vision')
 
-m = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
-
+print(client.klines(symbol='BTCUSDT', interval='1h'))
 
 
-conn = http.client.HTTPSConnection("testnet.binance.vision")
-# conn = http.client.HTTPSConnection("api.binance.com")
-payload = ''
-headers = {
-  'X-MBX-APIKEY': api_key
-}
-conn.request("GET", f"/api/v3/account?signature={m}&{query_string}", payload, headers)
-res = conn.getresponse()
-data = res.read()
-print(data.decode("utf-8"))
+# print(datetime.fromtimestamp(1697731199999/1e3))
 
-# print('&'.join([f"{d[0]}={d[1]}" for d in [('timestamp', '1234'), ('user', 'charlie')]]))
