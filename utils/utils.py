@@ -3,9 +3,9 @@ import multiprocessing
 # 单例模式 装饰器
 def singleton(cls):
     instances = {}
-    def wapper(*arg, **kwargs):
+    def wapper(*args, **kwargs):
         if cls not in instances:
-            instances[cls] = cls(*arg, **kwargs)
+            instances[cls] = cls(*args, **kwargs)
         return instances[cls]
     return wapper
 

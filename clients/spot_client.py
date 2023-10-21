@@ -6,6 +6,7 @@ import hmac
 import hashlib
 from binance.spot import Spot
 from utils.utils import singleton
+from client import BaseClient
 
 """
     Binance 现货类客户端类
@@ -26,7 +27,7 @@ class Health_Status(str, Enum):
     RED = "RED"
 
 @singleton
-class Client:
+class Client(BaseClient):
     api_key:str = None
     api_secret:str = None
     base_url = 'https://api.binance.com'
@@ -42,6 +43,7 @@ class Client:
                  base_url: Optional[str] = None, 
                  health_check: Optional[bool] = None,
                  health_check_freq: Optional[int] = None) -> None:
+        super.__init__()
         self.api_key = api_key
         self.api_secret = api_secret
         self.base_url = base_url
@@ -49,6 +51,7 @@ class Client:
         self.health_check_freq = health_check_freq
         self.session = self._init_session()
         self.spot_client = self._init_spot_client()
+        
 
     # 初始化session    
     def _init_session(self) -> requests.Session:
@@ -89,14 +92,17 @@ class Client:
             return self.account()
         return await __asyncify()
         
-    def klines(self, symbol: str, start_time: float = None, end_time: float = None, interval: str = '1h', limit: str = 800):
+    def klines(self, symbol: str, start_time: float = None, end_time: float = None, interval:str = '1h', limit: str = 800) -> dict or None:
         try:
             if start_time is None or end_time is None:
-                return self.spot_client.klines(symbol=symbol, interval=interval, limit=limit)
+                return {'symbol': symbol, 
+                        'value': self.spot_client.klines(symbol=symbol, interval=interval, limit=limit)}
             else:
-                return self.spot_client.klines(symbol=symbol, interval=interval, limit=limit, startTime=start_time, endTime=end_time)
+                return {'symbol': symbol,
+                        'value': self.spot_client.klines(symbol=symbol, interval=interval, limit=limit, startTime=start_time, endTime=end_time)}
         except Exception as e:
             # TODO: need Log
+            print(e)
             return None
         
     async def async_klins(self, *args, **kwargs):
