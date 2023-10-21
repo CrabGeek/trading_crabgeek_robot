@@ -84,6 +84,11 @@ class Client:
             print(e)
             return None
         
+    async def async_account(self):
+        async def __asyncify():
+            return self.account()
+        return await __asyncify()
+        
     def klines(self, symbol: str, start_time: float = None, end_time: float = None, interval: str = '1h', limit: str = 800):
         try:
             if start_time is None or end_time is None:
@@ -94,9 +99,19 @@ class Client:
             # TODO: need Log
             return None
         
+    async def async_klins(self, *args, **kwargs):
+        async def __asyncify():
+            return self.klines(*args, **kwargs)
+        return await __asyncify()
+                
     def exchange_info(self):
         try:
             return self.spot_client.exchange_info()
         except Exception as e:
             # TODO: need log
             return None
+    
+    async def async_exchange_info(self):
+        async def __asyncify():
+            return self.exchange_info()
+        return await __asyncify()
