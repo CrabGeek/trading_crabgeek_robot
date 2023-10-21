@@ -5,6 +5,7 @@ from enum import Enum
 import hmac
 import hashlib
 from binance.spot import Spot
+from utils.utils import singleton
 
 """
     Binance 现货类客户端类
@@ -24,6 +25,7 @@ class Health_Status(str, Enum):
     GREEN = "GREEN"
     RED = "RED"
 
+@singleton
 class Client:
     api_key:str = None
     api_secret:str = None
@@ -33,6 +35,7 @@ class Client:
     health_check_freq = 30
     session = None
     spot_client = None
+    test_data = 0
 
     def __init__(self, api_key: str, 
                  api_secret: str, 
@@ -78,6 +81,7 @@ class Client:
             return self.spot_client.account()
         except Exception as e:
             # TODO: need log
+            print(e)
             return None
         
     def klines(self, symbol: str, start_time: float = None, end_time: float = None, interval: str = '1h', limit: str = 800):
@@ -90,3 +94,9 @@ class Client:
             # TODO: need Log
             return None
         
+    def exchange_info(self):
+        try:
+            return self.spot_client.exchange_info()
+        except Exception as e:
+            # TODO: need log
+            return None
