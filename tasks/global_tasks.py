@@ -23,7 +23,7 @@ def schedular_get_market_condition_each_symbol(symbol_list: ListProxy, symbol_ma
     asyncio.set_event_loop(asyncio.new_event_loop())
     loop = asyncio.get_event_loop()
     # start_time=start_time, end_time=end_time,
-    tasks = [loop.create_task(client.async_klins(symbol=symbol, interval='15m', limit=100)) for symbol in symbol_list]
+    tasks = [loop.create_task(client.async_klins(symbol=symbol, interval='1h', limit=168)) for symbol in symbol_list]
     
     try:
         done_tasks, _ = loop.run_until_complete(asyncio.wait(tasks, timeout=120))

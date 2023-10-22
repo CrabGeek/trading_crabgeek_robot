@@ -3,10 +3,19 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
+'''
+    KDJ 指标交易策略
+    
+    over_sell_signal: 超卖信号
+    over_buy_signal: 超买信号
+'''
+# TODO: need config
+over_sell_signal = 20
+over_buy_signal = 80
+
 def KDJ_strategy_callable(data: dict):
     symbol = data['symbol']
     klines_data = data['value']
-    print(f'length: {len(klines_data)}')
     
     high = []
     low = []
@@ -31,17 +40,39 @@ def KDJ_strategy_callable(data: dict):
                 df['close'].values)
     j = 3*k - 2*d
     
-    k_last = k[-1]
-    d_last = d[-1]
-    j_last = j[-1]
+    current_k_value = k[-1]
+    current_d_value = d[-1]
+    current_j_value = j[-1]
     
-    k_minus_d_abs = abs(k_last - d_last)
-    k_minus_j_abs = abs(k_last - j_last)
-    d_minus_j_abs = abs(d_last - j_last)
+    previous_k_value = k[-2]
+    previous_d_value = d[-2]
+    previous_j_value = j[-2]
     
-    print(f'{symbol}: k: {k_last}, d: {d_last}, j: {j_last}, k-d abs: {k_minus_d_abs}, last kline: {klines_data[0][0]} {klines_data[-1][0]}')
-    if k_minus_d_abs <= 5 and k_minus_j_abs <= 5 and d_minus_j_abs:
-        print('--------')
-        print(f'{symbol} is time')
-        print('--------')
+    # 当D < 超卖线, K线和D线同时上升，且K线从下向上穿过D线时，买入/做多
+    if current_d_value < over_sell_signal and \
+        current_d_value > previous_d_value and \
+            current_k_value > previous_k_value and \
+                previous_k_value < previous_d_value and \
+                    current_k_value > current_d_value:
+        print('++++++++++++')
+        print(f'{symbol} is time to buy/go_long')
+        print('++++++++++++')
+        
+    elif current_d_value > over_buy_signal and \
+        current_d_value < previous_d_value and \
+            current_k_value < previous_k_value and \
+                previous_k_value > previous_d_value and \
+                    current_k_value < current_d_value:
+        print('++++++++++++')
+        print(f'{symbol} is time to sell/go_short')
+        print('++++++++++++')
+    # k_minus_d_abs = abs(k_last - d_last)
+    # k_minus_j_abs = abs(k_last - j_last)
+    # d_minus_j_abs = abs(d_last - j_last)
+    
+    # print(f'{symbol}: k: {k_last}, d: {d_last}, j: {j_last}, k-d abs: {k_minus_d_abs}, last kline: {klines_data[0][0]} {klines_data[-1][0]}')
+    # if k_minus_d_abs <= 5 and k_minus_j_abs <= 5 and d_minus_j_abs:
+    #     print('--------')
+    #     print(f'{symbol} is time')
+    #     print('--------')
     
