@@ -1,5 +1,5 @@
-from multiprocessing.synchronize import Event
 from clients.client import BaseClient
+from multiprocessing.synchronize import Event
 from enum import Enum
 
 '''
@@ -17,7 +17,7 @@ class RobotStatus(str, Enum):
 class BaseRobot:
     nickname: str = ''
     execute_event: Event = None
-    client: BaseClient = None
+    # client: BaseClient = None
     status: RobotStatus = RobotStatus.STOP
     
     def __init__(self, nickname: str, execute_event: Event, client: BaseClient) -> None:

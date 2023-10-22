@@ -1,3 +1,6 @@
 
 def KDJ_strategy(data: dict):
-    return data['symbol']
+    symbol = data['symbol']
+    klins_data = data['value']
+    
+    

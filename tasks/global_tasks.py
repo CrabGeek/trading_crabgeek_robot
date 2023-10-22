@@ -24,11 +24,12 @@ def schedular_get_market_condition_each_symbol(symbol_list: ListProxy, symbol_ma
     tasks = [loop.create_task(client.async_klins(symbol=symbol, start_time=start_time, end_time=end_time, interval='1m', limit=1000)) for symbol in symbol_list]
     
     try:
-        done_tasks, _ = loop.run_until_complete(asyncio.wait_for(tasks, timeout=120))
+        done_tasks, _ = loop.run_until_complete(asyncio.wait(tasks, timeout=120))
         # 更新symbol_list
         symbol_list[:] = []
         for done_task in done_tasks:
             symbol_market.append(done_task.result())
+        #通知Robot数据已更新好，执行相应策略
         symbol_kline_data_event.set()
     except asyncio.TimeoutError as e:
         # TODO: need log

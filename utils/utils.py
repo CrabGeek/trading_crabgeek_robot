@@ -11,5 +11,5 @@ def singleton(cls):
 
 # 初始化全局进程池
 # TODO: 需要可配置
-def init_executor():
-    return concurrent.futures.ProcessPoolExecutor(max_workers=multiprocessing.cpu_count())
+def init_processing_executor():
+    return concurrent.futures.ProcessPoolExecutor()

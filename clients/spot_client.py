@@ -6,7 +6,7 @@ import hmac
 import hashlib
 from binance.spot import Spot
 from utils.utils import singleton
-from client import BaseClient
+from .client import BaseClient
 
 """
     Binance 现货类客户端类
@@ -43,7 +43,7 @@ class Client(BaseClient):
                  base_url: Optional[str] = None, 
                  health_check: Optional[bool] = None,
                  health_check_freq: Optional[int] = None) -> None:
-        super.__init__()
+        super().__init__()
         self.api_key = api_key
         self.api_secret = api_secret
         self.base_url = base_url
