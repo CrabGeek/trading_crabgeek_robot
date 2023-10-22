@@ -18,7 +18,6 @@ class RobotsManager:
     def create(self, auto_run:bool = False, *args, **kwargs):
         robot = MarketRobot(*args, **kwargs)
         if auto_run:
-            print(robot is None)
             self._robots_executor.submit(robot.run)
         self._robots_list.append(robot)
         

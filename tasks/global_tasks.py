@@ -11,6 +11,7 @@ def schedular_get_symbols(symbol_list: ListProxy):
     exchange_info = asyncio.run(client.async_exchange_info())
     quote_asset_usdt_list = list(filter(lambda x: x['quoteAsset'] == 'USDT', exchange_info['symbols']))
     symbol_list[:] = list(map(lambda x : x['symbol'], quote_asset_usdt_list))
+    # print(symbol_list)
     
 
 def schedular_get_market_condition_each_symbol(symbol_list: ListProxy, symbol_market: ListProxy, symbol_kline_data_event: Event):
@@ -21,12 +22,13 @@ def schedular_get_market_condition_each_symbol(symbol_list: ListProxy, symbol_ma
     
     asyncio.set_event_loop(asyncio.new_event_loop())
     loop = asyncio.get_event_loop()
-    tasks = [loop.create_task(client.async_klins(symbol=symbol, start_time=start_time, end_time=end_time, interval='1m', limit=1000)) for symbol in symbol_list]
+    # start_time=start_time, end_time=end_time,
+    tasks = [loop.create_task(client.async_klins(symbol=symbol, interval='15m', limit=100)) for symbol in symbol_list]
     
     try:
         done_tasks, _ = loop.run_until_complete(asyncio.wait(tasks, timeout=120))
         # 更新symbol_list
-        symbol_list[:] = []
+        symbol_market[:] = []
         for done_task in done_tasks:
             symbol_market.append(done_task.result())
         #通知Robot数据已更新好，执行相应策略

@@ -44,7 +44,8 @@ class MarketRobot(BaseRobot):
         
         while True:
             print('waiting')
-            self.execute_event.wait()            
+            self.execute_event.wait()
+            print('execute')
             tasks = [self.executor.submit(self.strategy, symbol_data) for symbol_data in self.data]
             results = [task.result() for task in concurrent.futures.as_completed(tasks)]
             self.execute_event.clear()
