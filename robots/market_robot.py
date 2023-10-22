@@ -2,10 +2,15 @@ from clients.client import BaseClient
 from .robot import BaseRobot
 from multiprocessing.synchronize import Event
 from concurrent.futures.thread import ThreadPoolExecutor
-import concurrent.futures
-from typing import Callable
+from concurrent.futures import ProcessPoolExecutor
+import concurrent.futures 
+from typing import Callable, List
 from multiprocessing.managers import ListProxy
 from .robot import RobotStatus
+from service.email_service import EmailService
+import asyncio
+from strategies.result import Result
+
 
 '''
     现货市场机器人
@@ -15,18 +20,26 @@ class MarketRobot(BaseRobot):
     executor: ThreadPoolExecutor = None
     strategy: Callable = None
     data: ListProxy
+    email_enable: bool = False
+    email_service: EmailService = None
+    result_list: List[Result]
     def __init__(self, 
                  event: Event, 
                  client: BaseClient, 
-                 executor: ThreadPoolExecutor,
+                #  executor: ThreadPoolExecutor,
+                 executor: ProcessPoolExecutor,
                  strategy: Callable,
                  data: ListProxy,
-                 nickname: str='market_robot') -> None:
+                 email_service: EmailService,
+                 nickname: str='market_robot',
+                 email_enable: bool = False) -> None:
         super().__init__(nickname=nickname, execute_event = event, client = client)
         self.executor = executor
         self.strategy = strategy
         self.data = data
-        
+        self.email_enable = email_enable
+        self.email_service = email_service
+        self.result_list = []
     
     def run(self):
         if self.executor is None:
@@ -43,9 +56,28 @@ class MarketRobot(BaseRobot):
         self.status = RobotStatus.RUNNING
         
         while True:
-            print('waiting')
-            self.execute_event.wait()
-            print('execute')
-            tasks = [self.executor.submit(self.strategy, symbol_data) for symbol_data in self.data]
-            results = [task.result() for task in concurrent.futures.as_completed(tasks)]
-            self.execute_event.clear()
+            try:
+                print('waiting')
+                self.execute_event.wait()
+                print('execute')
+                print(len(self.data))
+                tasks = [self.executor.submit(self.strategy, symbol_data) for symbol_data in self.data]
+                results = [task.result() for task in concurrent.futures.as_completed(tasks)]
+                for result in results:
+                    if result is not None:
+                        self.result_list.append(result)
+                # for symbol_data in self.data:
+                #     print('------------')
+                #     print(symbol_data['symbol'])
+                #     print('------------')
+                #     result = self.strategy(symbol_data)
+                #     if result is not None:
+                #         self.result_list.append(result)
+                print('complete and read to send')
+                if self.email_service is not None and self.email_enable == True:
+                    asyncio.run(self.email_service.async_send(self.result_list))
+                self.execute_event.clear()
+        
+            except Exception as e:
+                print(e)
+                self.execute_event.clear()

@@ -92,7 +92,7 @@ class Client(BaseClient):
             return self.account()
         return await __asyncify()
         
-    def klines(self, symbol: str, start_time: float = None, end_time: float = None, interval:str = '1h', limit: str = 800) -> dict or None:
+    def klines(self, symbol: str, start_time: float = None, end_time: float = None, interval:str = '1h', limit: int = 800) -> dict or None:
         try:
             if start_time is None or end_time is None:
                 return {'symbol': symbol, 

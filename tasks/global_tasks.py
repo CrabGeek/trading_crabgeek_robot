@@ -31,6 +31,7 @@ def schedular_get_market_condition_each_symbol(symbol_list: ListProxy, symbol_ma
         symbol_market[:] = []
         for done_task in done_tasks:
             symbol_market.append(done_task.result())
+        print(len(symbol_market))
         #通知Robot数据已更新好，执行相应策略
         symbol_kline_data_event.set()
     except asyncio.TimeoutError as e:

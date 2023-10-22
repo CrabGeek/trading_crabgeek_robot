@@ -2,7 +2,7 @@ import talib
 import pandas as pd
 import numpy as np
 from datetime import datetime
-
+from .result import Result, ResultEnum
 '''
     KDJ 指标交易策略
     
@@ -13,7 +13,7 @@ from datetime import datetime
 over_sell_signal = 20
 over_buy_signal = 80
 
-def KDJ_strategy_callable(data: dict):
+def KDJ_strategy_callable(data: dict) -> Result or None:
     symbol = data['symbol']
     klines_data = data['value']
     
@@ -33,7 +33,6 @@ def KDJ_strategy_callable(data: dict):
         'low': low,
         'close': close
     })
-    
     
     k, d = talib.STOCH(df['high'].values, 
                 df['low'].values, 
@@ -57,6 +56,7 @@ def KDJ_strategy_callable(data: dict):
         print('++++++++++++')
         print(f'{symbol} is time to buy/go_long')
         print('++++++++++++')
+        return Result(symbol=symbol, result=ResultEnum.BUY_OR_GO_LONG)
         
     elif current_d_value > over_buy_signal and \
         current_d_value < previous_d_value and \
@@ -66,13 +66,7 @@ def KDJ_strategy_callable(data: dict):
         print('++++++++++++')
         print(f'{symbol} is time to sell/go_short')
         print('++++++++++++')
-    # k_minus_d_abs = abs(k_last - d_last)
-    # k_minus_j_abs = abs(k_last - j_last)
-    # d_minus_j_abs = abs(d_last - j_last)
-    
-    # print(f'{symbol}: k: {k_last}, d: {d_last}, j: {j_last}, k-d abs: {k_minus_d_abs}, last kline: {klines_data[0][0]} {klines_data[-1][0]}')
-    # if k_minus_d_abs <= 5 and k_minus_j_abs <= 5 and d_minus_j_abs:
-    #     print('--------')
-    #     print(f'{symbol} is time')
-    #     print('--------')
+        return Result(symbol=symbol, result=ResultEnum.SELL_OR_GO_SHORT)
+        
+    return None
     

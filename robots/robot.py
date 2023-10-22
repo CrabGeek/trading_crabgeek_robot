@@ -1,7 +1,10 @@
 from clients.client import BaseClient
 from multiprocessing.synchronize import Event
 from enum import Enum
+from typing import List
+from strategies.result import Result
 
+from threading import Event as threadingEvent
 '''
     交易机器人基类
     
@@ -17,8 +20,9 @@ class RobotStatus(str, Enum):
 class BaseRobot:
     nickname: str = ''
     execute_event: Event = None
-    # client: BaseClient = None
+    client: BaseClient = None
     status: RobotStatus = RobotStatus.STOP
+    compute_completed_event: threadingEvent
     
     def __init__(self, nickname: str, execute_event: Event, client: BaseClient) -> None:
         self.nickname = nickname

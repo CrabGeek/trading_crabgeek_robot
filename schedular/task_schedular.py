@@ -1,4 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
 from tasks import global_tasks
 from multiprocessing.managers import Namespace
 
@@ -17,7 +18,7 @@ def init_glable_schedular(glabal_namespace: Namespace):
                             glabal_namespace.symbol_market_data_update_event)
     schedular.add_job(global_tasks.schedular_get_market_condition_each_symbol,
                       'cron', 
-                      minute='*/15', 
+                      minute='*/30', 
                       args=[glabal_namespace.symbol_list, 
                             glabal_namespace.symbol_market,
                             glabal_namespace.symbol_market_data_update_event])
