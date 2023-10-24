@@ -78,8 +78,9 @@ class MarketRobot(BaseRobot):
                 if self.email_service is not None and self.email_enable == True:
                     asyncio.run(self.email_service.async_send(self.result_list))
                 self.execute_event.clear()
-        
+                self.result_list.clear()
             except Exception as e:
                 print(e)
                 self.execute_event.clear()
-                return
+                self.result_list.clear()
+                break

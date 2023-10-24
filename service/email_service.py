@@ -36,7 +36,9 @@ class EmailService:
         self.email_key = email_key
         
         self._server = smtplib.SMTP_SSL(self.smtp_server_url, self.smtp_port)
-        
+    
+    def _connect(self):
+        self._server.connect(self.smtp_server_url, self.smtp_port)
     
     def _login(self):
         try:
@@ -63,7 +65,6 @@ class EmailService:
             print(e)
             
     async def async_send(self, data: List[Result]):
-        print('email....')
         msg = self._build_msg(data=data)
         if msg is None:
             return
@@ -76,19 +77,16 @@ class EmailService:
         
         
     def _send(self, msg: str):
+        self._connect()
         self._login()
         self._server.sendmail(self.sender_email, self.receiver_email, msg.as_string())
+        self._server.quit()
         
     async def _async_send(self, msg: str):
-        self._login()
         self._send(msg=msg)
     
         
     def _build_msg(self, data: List[Result]) -> MIMEText or None:
-        # if not self._running:
-        #     # TODO: need log
-        #     print('server is not running')
-        #     return None
         if data is None or len(data) == 0:
             # TODO: need log
             return None
