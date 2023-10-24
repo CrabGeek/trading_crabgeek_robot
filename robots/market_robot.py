@@ -69,7 +69,8 @@ class MarketRobot(BaseRobot):
                 #     if result is not None:
                 #         self.result_list.append(result)
                 tasks = [loop.run_in_executor(self.executor, self.strategy, symbol_data) for symbol_data in self.data]
-                done_tasks, _ = loop.run_until_complete(asyncio.wait(tasks, timeout=180))
+                done_tasks, _ = loop.run_until_complete(asyncio.wait(tasks, timeout=300))
+                self.result_list.clear()
                 for task in done_tasks:
                     result = task.result()
                     if result is not None:
@@ -78,7 +79,6 @@ class MarketRobot(BaseRobot):
                 if self.email_service is not None and self.email_enable == True:
                     asyncio.run(self.email_service.async_send(self.result_list))
                 self.execute_event.clear()
-                self.result_list.clear()
             except Exception as e:
                 print(e)
                 self.execute_event.clear()
