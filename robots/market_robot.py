@@ -61,18 +61,19 @@ class MarketRobot(BaseRobot):
                 self.execute_event.wait()
                 print('execute')
                 print(len(self.data))
-                tasks = [self.executor.submit(self.strategy, symbol_data) for symbol_data in self.data]
-                results = [task.result() for task in concurrent.futures.as_completed(tasks)]
-                for result in results:
-                    if result is not None:
-                        self.result_list.append(result)
-                # for symbol_data in self.data:
-                #     print('------------')
-                #     print(symbol_data['symbol'])
-                #     print('------------')
-                #     result = self.strategy(symbol_data)
+                asyncio.set_event_loop(asyncio.new_event_loop())
+                loop = asyncio.get_event_loop()
+                # tasks = [self.executor.submit(self.strategy, symbol_data) for symbol_data in self.data]
+                # results = [task.result() for task in concurrent.futures.as_completed(tasks)]
+                # for result in results:
                 #     if result is not None:
                 #         self.result_list.append(result)
+                tasks = [loop.run_in_executor(self.executor, self.strategy, symbol_data) for symbol_data in self.data]
+                done_tasks, _ = loop.run_until_complete(asyncio.wait(tasks, timeout=180))
+                for task in done_tasks:
+                    result = task.result()
+                    if result is not None:
+                        self.result_list.append(result)
                 print('complete and read to send')
                 if self.email_service is not None and self.email_enable == True:
                     asyncio.run(self.email_service.async_send(self.result_list))
@@ -81,3 +82,4 @@ class MarketRobot(BaseRobot):
             except Exception as e:
                 print(e)
                 self.execute_event.clear()
+                return

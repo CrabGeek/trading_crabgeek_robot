@@ -36,7 +36,7 @@ class EmailService:
         self.email_key = email_key
         
         self._server = smtplib.SMTP_SSL(self.smtp_server_url, self.smtp_port)
-        self._login()
+        
     
     def _login(self):
         try:
@@ -76,17 +76,19 @@ class EmailService:
         
         
     def _send(self, msg: str):
+        self._login()
         self._server.sendmail(self.sender_email, self.receiver_email, msg.as_string())
         
     async def _async_send(self, msg: str):
+        self._login()
         self._send(msg=msg)
     
         
     def _build_msg(self, data: List[Result]) -> MIMEText or None:
-        if not self._running:
-            # TODO: need log
-            print('server is not running')
-            return None
+        # if not self._running:
+        #     # TODO: need log
+        #     print('server is not running')
+        #     return None
         if data is None or len(data) == 0:
             # TODO: need log
             return None
@@ -99,41 +101,5 @@ class EmailService:
         
         return msg
         
-    
-    
-    
 
-# smtp_server = 'smtp.qq.com'
-# smtp_port = 465
-
-# sender_email = '2573543975@qq.com'
-# receiver_email = '2573543975@qq.com'
-
-# subject = 'Crabgeek 自动化筛选'
-
-# message = '测试正文'
-
-# # 创建一个MIMEText对象
-# msg = MIMEText(message, 'plain', 'utf-8')
-
-
-# msg['Subject'] = Header(subject, 'utf-8')
-# msg['From'] = sender_email
-# msg['To'] = receiver_email
-
-# # 在这里输入你的QQ邮箱账号和授权码
-# username = '2573543975@qq.com'
-# password = 'bzyfpgwcqwleebhi'
-
-# # 连接到QQ邮箱的SMTP服务器
-# server = smtplib.SMTP_SSL(smtp_server, smtp_port)
-
-# # 登录到QQ邮箱账号
-# server.login(username, password)
-
-# # 发送邮件
-# server.sendmail(sender_email, receiver_email, msg.as_string())
-
-# # 断开与服务器的连接
-# server.quit()
 

@@ -42,7 +42,7 @@ class Client(BaseClient):
                  api_secret: str, 
                  base_url: Optional[str] = None, 
                  health_check: Optional[bool] = None,
-                 health_check_freq: Optional[int] = None) -> None:
+                 health_check_freq: Optional[int] = None):
         super().__init__()
         self.api_key = api_key
         self.api_secret = api_secret
