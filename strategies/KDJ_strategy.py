@@ -9,6 +9,7 @@ from .result import Result, ResultEnum
     over_sell_signal: 超卖信号
     over_buy_signal: 超买信号
 '''
+
 # TODO: need config
 over_sell_signal = 20
 over_buy_signal = 80
@@ -53,9 +54,7 @@ def KDJ_strategy_callable(data: dict) -> Result or None:
             current_k_value > previous_k_value and \
                 previous_k_value < previous_d_value and \
                     current_k_value > current_d_value:
-        print('++++++++++++')
-        print(f'{symbol} is time to buy/go_long')
-        print('++++++++++++')
+        
         return Result(symbol=symbol, result=ResultEnum.BUY_OR_GO_LONG)
         
     elif current_d_value > over_buy_signal and \
@@ -63,9 +62,7 @@ def KDJ_strategy_callable(data: dict) -> Result or None:
             current_k_value < previous_k_value and \
                 previous_k_value > previous_d_value and \
                     current_k_value < current_d_value:
-        print('++++++++++++')
-        print(f'{symbol} is time to sell/go_short')
-        print('++++++++++++')
+
         return Result(symbol=symbol, result=ResultEnum.SELL_OR_GO_SHORT)
         
     return None

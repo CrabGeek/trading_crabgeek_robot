@@ -8,12 +8,12 @@ class ResultEnum(str, Enum):
     
 class Result:
     symbol: str = ''
+    strategy: str = ''
+    data: str = ''
     result: ResultEnum = ResultEnum.UNKNOWN
     
-    def __init__(self, symbol: str, result: ResultEnum) -> None:
+    def __init__(self, symbol: str, strategy: str, result: ResultEnum, data: str = '') -> None:
         self.symbol = symbol
         self.result = result
-        
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, 
-            sort_keys=False, indent=4)
+        self.strategy = strategy
+        self.data = ''
