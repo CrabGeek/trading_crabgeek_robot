@@ -21,7 +21,7 @@ def init_glable_schedular(glabal_namespace: Namespace, config: BaseConfig):
     schedular.add_job(global_tasks.schedular_get_market_condition_each_symbol,
                       'cron', 
                     #   minute='*/15',
-                      minute = '0, 15, 30, 45',
+                      minute = '1, 16, 31, 46',
                       args=[glabal_namespace.symbol_list, 
                             glabal_namespace.symbol_market,
                             glabal_namespace.symbol_market_data_update_event,
