@@ -8,6 +8,28 @@ from .result import Result, ResultEnum
     
     over_sell_signal: 超卖信号
     over_buy_signal: 超买信号
+    
+    计算KDJ指标的过程如下:
+
+    计算N日内的最低价 (Lowest Low)和最高价(Highest High):
+    首先, 需要确定计算KDJ指标所使用的时间周期N。在这个周期内, 需要找出最低价的最低值和最高价的最高值。
+
+    计算当日的RSV值 (Raw Stochastic Value): 
+    RSV是根据当日收盘价 (Close) 在N日内最低价和最高价的位置计算得出的百分比。RSV的计算公式如下: 
+    RSV = (Close - Lowest Low) / (Highest High - Lowest Low) * 100
+
+    计算当日的K值 (K-line): 
+    K值是根据前一日的K值和当日的RSV值计算得出的平滑值。K值的计算公式如下: 
+    K = a * 前一日K值 + (1 - a) * 当日RSV
+    其中, a为平滑系数, 一般取2 / (N + 1)。
+
+    计算当日的D值 (D-line)
+    D值是根据前一日的D值和当日的K值计算得出的平滑值。D值的计算公式如下: 
+    D = a * 前一日D值 + (1 - a) * 当日K值
+
+    计算当日的J值 (J-line):
+    J值是K值和D值的加权平均值,常用的加权系数为3。J值的计算公式如下:
+    J = 3 * 当日K值 - 2 * 当日D值
 '''
 
 # TODO: need config

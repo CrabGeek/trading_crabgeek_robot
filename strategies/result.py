@@ -9,11 +9,11 @@ class ResultEnum(str, Enum):
 class Result:
     symbol: str = ''
     strategy: str = ''
-    data: str = ''
+    data: dict = {}
     result: ResultEnum = ResultEnum.UNKNOWN
     
-    def __init__(self, symbol: str, strategy: str, result: ResultEnum, data: str = '') -> None:
+    def __init__(self, symbol: str, strategy: str, result: ResultEnum, data: dict = {}) -> None:
         self.symbol = symbol
         self.result = result
         self.strategy = strategy
-        self.data = ''
+        self.data = data

@@ -21,19 +21,21 @@ class EmailService:
     receiver_email: str = ''
     username: str = ''
     email_key: str = ''
+    test: bool = False
     
     def __init__(self, smtp_server_url: str, 
                  smtp_port: int, 
                  sender_email: str,
                  receiver_email: str,
                  username: str,
-                 email_key: str) -> None:
+                 email_key: str, test: bool = False) -> None:
         self.smtp_server_url = smtp_server_url
         self.smtp_port = smtp_port
         self.sender_email = sender_email
         self.receiver_email = receiver_email
         self.username = username
         self.email_key = email_key
+        self.test = test
         
         self._server = smtplib.SMTP_SSL(self.smtp_server_url, self.smtp_port)
     
@@ -93,7 +95,8 @@ class EmailService:
         json_str = json.dumps([ob.__dict__ for ob in data], indent=4)
         print(json_str)
         msg = MIMEText(json_str, 'plain', 'utf-8')
-        msg['Subject'] = Header(f'{self._default_header} - {datetime.now()}', 'utf-8')
+        header_str = f'{self._default_header} - {datetime.now()}' if self.test == False else f'Test - {datetime.now()}'
+        msg['Subject'] = Header(header_str, 'utf-8')
         msg['From'] = self.sender_email
         msg['To'] = self.receiver_email
         
