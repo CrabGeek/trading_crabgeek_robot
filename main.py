@@ -23,7 +23,7 @@ email_service = EmailService(smtp_server_url=emailClientConfig.get_smtp_server_u
                              receiver_email=emailClientConfig.get_receiver_email(),
                              username=emailClientConfig.get_username(),
                              email_key=emailClientConfig.get_key(),
-                             test=True)
+                             test=False)
 
 threadingExecutor = init_threading_executor()
 processingExecutor = init_processing_executor()
