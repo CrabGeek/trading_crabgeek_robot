@@ -59,16 +59,16 @@ class KDJAndRSIStrategy(BaseStrategy):
             j = 3*k - 2*d
             
             
-            rsi = talib.RSI(df['close'], self._rsi_window)
+            rsi = round(talib.RSI(df['close'], self._rsi_window), 2)
             
             
-            current_k_value = k[-1]
-            current_d_value = d[-1]
-            current_j_value = j[-1]
+            current_k_value = round(k[-1], 2)
+            current_d_value = round(d[-1], 2)
+            current_j_value = round(j[-1], 2)
             
-            previous_k_value = k[-2]
-            previous_d_value = d[-2]
-            previous_j_value = j[-2]
+            previous_k_value = round(k[-2], 2)
+            previous_d_value = round(d[-2], 2)
+            previous_j_value = round(j[-2], 2)
             
             # 当D < 超卖线, K线和D线同时上升，且K线从下向上穿过D线时，买入/做多
             if current_d_value < self._over_sell_signal and \
