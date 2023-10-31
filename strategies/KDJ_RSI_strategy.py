@@ -59,16 +59,16 @@ class KDJAndRSIStrategy(BaseStrategy):
             j = 3*k - 2*d
             
             
-            rsi = round(talib.RSI(df['close'], self._rsi_window), 2)
+            rsi = talib.RSI(df['close'], self._rsi_window)
             
             
-            current_k_value = round(k[-1], 2)
-            current_d_value = round(d[-1], 2)
-            current_j_value = round(j[-1], 2)
+            current_k_value = k[-1]
+            current_d_value = d[-1]
+            current_j_value = j[-1]
             
-            previous_k_value = round(k[-2], 2)
-            previous_d_value = round(d[-2], 2)
-            previous_j_value = round(j[-2], 2)
+            previous_k_value = k[-2]
+            previous_d_value = d[-2]
+            previous_j_value = j[-2]
             
             # 当D < 超卖线, K线和D线同时上升，且K线从下向上穿过D线时，买入/做多
             if current_d_value < self._over_sell_signal and \
@@ -78,8 +78,8 @@ class KDJAndRSIStrategy(BaseStrategy):
                             current_k_value > current_d_value:
                                 
                 result_data = {
-                    'KDJ:': f'K: {current_k_value}, D: {current_d_value}, J: {current_j_value}',
-                    'RSI:': f'{rsi.iloc[-1] if len(rsi) > 0 else -1}'
+                    'KDJ:': f'K: {round(current_k_value, 5)}, D: {round(current_d_value, 5)}, J: {round(current_j_value, 5)}',
+                    'RSI:': f'{round(rsi.iloc[-1], 5) if len(rsi) > 0 else -1}'
                 }
                 return Result(symbol=symbol, strategy=self.strategy_name, data=result_data, result=ResultEnum.BUY_OR_GO_LONG)
                 
@@ -89,8 +89,8 @@ class KDJAndRSIStrategy(BaseStrategy):
                         previous_k_value > previous_d_value and \
                             current_k_value < current_d_value:
                 result_data = {
-                    'KDJ:': f'K: {current_k_value}, D: {current_d_value}, J: {current_j_value}',
-                    'RSI:': f'{rsi.iloc[-1] if len(rsi) > 0 else -1}'
+                    'KDJ:': f'K: {round(current_k_value, 5)}, D: {round(current_d_value, 5)}, J: {round(current_j_value, 5)}',
+                    'RSI:': f'{round(rsi.iloc[-1], 5) if len(rsi) > 0 else -1}'
                 }
                 return Result(symbol=symbol, strategy=self.strategy_name, data=result_data, result=ResultEnum.SELL_OR_GO_SHORT)
         

@@ -46,24 +46,24 @@ class MAAndKDJStrategy(BaseStrategy):
                         df['close'].values)
             j = 3*k - 2*d
 
-            current_k_value = round(k[-1], 2)
-            current_d_value = round(d[-1], 2)
-            current_j_value = round(j[-1], 2)
+            current_k_value = k[-1]
+            current_d_value = d[-1]
+            current_j_value = j[-1]
 
             ema_fast = talib.EMA(df['close'].values, self._fast_peroid)
             ema_slow = talib.EMA(df['close'].values, self._slow_peroid)
 
-            current_ema_fast = round(ema_fast[-1], 2)
-            current_ema_slow = round(ema_slow[-1], 2)
+            current_ema_fast = ema_fast[-1]
+            current_ema_slow = ema_slow[-1]
 
-            pre_ema_fast = round(ema_fast[-2], 2)
-            pre_ema_slow = round(ema_slow[-2], 2)
+            pre_ema_fast = ema_fast[-2]
+            pre_ema_slow = ema_slow[-2]
 
             # EMA5从下向上穿过EMA20, 买入或做多信号
             if pre_ema_fast <= pre_ema_slow and current_ema_fast > current_ema_slow:
                 result_data = {
-                    'KDJ:': f'K: {current_k_value}, D: {current_d_value}, J: {current_j_value}',
-                    'EMA:': f'EMA_5: {current_ema_fast}, EMA_20: {current_ema_slow}'
+                    'KDJ:': f'K: {round(current_k_value, 5)}, D: {round(current_d_value, 5)}, J: {round(current_j_value, 5)}',
+                    'EMA:': f'EMA_5: {round(current_ema_fast, 5)}, EMA_20: {round(current_ema_slow, 5)}'
                 }
 
                 return Result(symbol=symbol, strategy=self.strategy_name, data=result_data, result=ResultEnum.BUY_OR_GO_LONG)
@@ -71,8 +71,8 @@ class MAAndKDJStrategy(BaseStrategy):
             # EMA5 从上向下穿过EMA20, 卖出或做空
             elif pre_ema_fast >= pre_ema_slow and current_ema_fast < current_ema_slow:
                 result_data = {
-                    'KDJ:': f'K: {current_k_value}, D: {current_d_value}, J: {current_j_value}',
-                    'EMA:': f'EMA_5: {current_ema_fast}, EMA_20: {current_ema_slow}'
+                    'KDJ:': f'K: {round(current_k_value, 5)}, D: {round(current_d_value, 5)}, J: {round(current_j_value, 5)}',
+                    'EMA:': f'EMA_5: {round(current_ema_fast, 5)}, EMA_20: {round(current_ema_slow, 5)}'
                 }
                 return Result(symbol=symbol, strategy=self.strategy_name, data=result_data, result=ResultEnum.BUY_OR_GO_LONG)
             
