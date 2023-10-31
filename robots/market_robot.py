@@ -56,10 +56,7 @@ class MarketRobot(BaseRobot):
         
         while True:
             try:
-                print('waiting')
                 self.execute_event.wait()
-                print('execute')
-                print(len(self.data))
                 asyncio.set_event_loop(asyncio.new_event_loop())
                 loop = asyncio.get_event_loop()
                 tasks = [loop.run_in_executor(self.executor, self.strategy_obj.strategy, symbol_data) for symbol_data in self.data]
@@ -71,7 +68,6 @@ class MarketRobot(BaseRobot):
                         json_str = json.dumps(result.__dict__, indent=4)
                         print(json_str)
                         self.result_list.append(result)
-                print('complete and read to send')
                 if self.email_service is not None and self.email_enable == True:
                     asyncio.run(self.email_service.async_send(self.result_list))
                 self.execute_event.clear()
