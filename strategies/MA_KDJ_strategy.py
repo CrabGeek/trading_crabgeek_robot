@@ -74,7 +74,7 @@ class MAAndKDJStrategy(BaseStrategy):
                     'KDJ:': f'K: {round(current_k_value, 5)}, D: {round(current_d_value, 5)}, J: {round(current_j_value, 5)}',
                     'EMA:': f'EMA_5: {round(current_ema_fast, 5)}, EMA_20: {round(current_ema_slow, 5)}'
                 }
-                return Result(symbol=symbol, strategy=self.strategy_name, data=result_data, result=ResultEnum.BUY_OR_GO_LONG)
+                return Result(symbol=symbol, strategy=self.strategy_name, data=result_data, result=ResultEnum.SELL_OR_GO_SHORT)
             
             return None
 
