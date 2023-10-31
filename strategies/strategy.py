@@ -7,5 +7,5 @@ class BaseStrategy:
     def __init__(self, strategy_name: str) -> None:
         self.strategy_name = strategy_name
 
-    def strategy(data: dict) -> Result or None:
+    def strategy(self, data: dict) -> Result or None:
         raise NotImplementedError()

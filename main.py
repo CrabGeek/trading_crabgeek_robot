@@ -8,6 +8,7 @@ from robots.robots_manager import RobotsManager
 from service.email_service import EmailService
 from utils.utils import init_threading_executor, init_processing_executor
 from strategies.KDJ_RSI_strategy import KDJAndRSIStrategy
+from strategies.MA_KDJ_strategy import MAAndKDJStrategy
 
 
 marketClientConfig = MarketClientConfig()
@@ -47,7 +48,8 @@ def main():
                                 event=namespace_tuple[0].symbol_market_data_update_event, 
                                 client=client, 
                                 executor=processingExecutor,
-                                strategy_obj=KDJAndRSIStrategy(),
+                                # strategy_obj=KDJAndRSIStrategy(),
+                                strategy_obj = MAAndKDJStrategy(),
                                 data=namespace_tuple[0].symbol_market,
                                 nickname='carbgeek',
                                 email_service = email_service,
